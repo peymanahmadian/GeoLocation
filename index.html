@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+    <link href="css.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div id="nudge">امکان دسترسی به اطلاعات موقعیت فعلی شما وجود ندارد</div>
+        <div id="false">شما در محدوده شرکت قرار ندارید</div>
+        <div id="true">شما در محدوده شرکت قرار دارید</div>
+    </div>
+    <script>
+
+        window.onload=function(){
+            var startPos;
+            var nudge = document.getElementById("nudge");
+
+            var showNudgeBanner = function () {
+                nudge.style.display = "block";
+            };
+
+            var hideNudgeBanner = function () {
+                nudge.style.display = "none";
+            };
+
+            var nudgeTimeoutId = setTimeout(showNudgeBanner, 5000);
+
+            var geoSuccess = function (position) {
+                hideNudgeBanner();
+                // We have the location, don't display banner
+                clearTimeout(nudgeTimeoutId);
+
+                // Do magic with location
+                startPos = position;
+                if ((startPos.coords.latitude >= 35.72241311581068) && (startPos.coords.latitude <= 35.722909599156395)) {
+                    if ((startPos.coords.longitude >= 51.38863981609404) && (startPos.coords.longitude <= 51.3898736322408)) {
+                        document.getElementById("true").style.display = "block";
+                    }
+                    else {
+                        document.getElementById("false").style.display = "block";
+                    }
+                }
+                else {
+                    document.getElementById("false").style.display = "block";
+                }
+                //document.getElementById('startLat').innerHTML = startPos.coords.latitude;
+                //document.getElementById('startLon').innerHTML = startPos.coords.longitude;
+            };
+            var geoError = function (error) {
+                switch (error.code) {
+                    case error.TIMEOUT:
+                        // The user didn't accept the callout
+                        showNudgeBanner();
+                        break;
+                }
+            };
+
+            navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
+        };
+    </script>
+</body>
+</html>
